@@ -2,22 +2,22 @@
 
 # check php version and extensions
 
-if  [ "$(php -m | grep -c 'mbstring')" -ge 1 ]; then
+if ! [ "$(php -m | grep -c 'mbstring')" -ge 1 ]; then
 	echo "Please enable 'mbstring' php extension to proceed"
 	exit 1
 fi 
 
-if  [ "$(php -m | grep -c 'PDO')" -ge 1 ]; then
+if ! [ "$(php -m | grep -c 'PDO')" -ge 1 ]; then
 	echo "Please enable 'PDO' php extension to proceed"
 	exit 1
 fi 
 
-if  [ "$(php -m | grep -c 'openssl')" -ge 1 ]; then
+if ! [ "$(php -m | grep -c 'openssl')" -ge 1 ]; then
 	echo "Please enable 'openssl' php extension to proceed"
 	exit 1
 fi 
 
-if  [ "$(php -m | grep -c 'tokenizer')" -ge 1 ]; then
+if ! [ "$(php -m | grep -c 'tokenizer')" -ge 1 ]; then
 	echo "Please enable 'tokenizer' php extension to proceed"
 	exit 1
 fi 
