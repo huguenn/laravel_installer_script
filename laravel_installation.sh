@@ -6,7 +6,7 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 
 #check for php installation
-if ! type "ph" > /dev/null; then
+if ! type "php" > /dev/null; then
   echo -e "${RED}You don't have php installed, please install PHP first and then try again"
   exit 1
 fi
@@ -42,8 +42,11 @@ if ! [ "$(php -m | grep -c 'tokenizer')" -ge 1 ]; then
 	exit 1
 fi 
 
-#check if composer installed
-
+#check if composer installation
+if ! type "composer" > /dev/null; then
+  echo -e "${RED}You don't have Composer installed, please install Composer to proceed."
+  exit 1
+fi
 
 
 # if a project name given then work on that otherwise prompt to give a project name
