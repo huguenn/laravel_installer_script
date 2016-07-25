@@ -2,11 +2,12 @@
 
 #global values
 required_version="5.5.9"
+RED='\033[0;31m'
+GREEN='\033[0;32m'
 
 #check for php installation
-
-if ! type "php" > /dev/null; then
-  echo "You don't have php installed, please install PHP first and then try again"
+if ! type "ph" > /dev/null; then
+  echo -e "${RED}You don't have php installed, please install PHP first and then try again"
   exit 1
 fi
 
@@ -15,29 +16,29 @@ php_version=$(php -v | grep -P -o -i "PHP (\d+\.\d+\.\d+)" | tr -d "\n\r\f" | se
 
 if [[ $php_version < $required_version ]]
 then
-	echo "You need to upgrade your PHP version to work with Laravel. Required version: $required_version"
+	echo -e "${RED}You need to upgrade your PHP version to work with Laravel. Required version: $required_version"
 	exit 1
 fi
 
 
 #check for php extensions
 if ! [ "$(php -m | grep -c 'mbstring')" -ge 1 ]; then
-	echo "Please enable 'mbstring' php extension to proceed"
+	echo -e "${RED}Please enable 'mbstring' php extension to proceed"
 	exit 1
 fi 
 
 if ! [ "$(php -m | grep -c 'PDO')" -ge 1 ]; then
-	echo "Please enable 'PDO' php extension to proceed"
+	echo -e "${RED}Please enable 'PDO' php extension to proceed"
 	exit 1
 fi 
 
 if ! [ "$(php -m | grep -c 'openssl')" -ge 1 ]; then
-	echo "Please enable 'openssl' php extension to proceed"
+	echo -e "${RED}Please enable 'openssl' php extension to proceed"
 	exit 1
 fi 
 
 if ! [ "$(php -m | grep -c 'tokenizer')" -ge 1 ]; then
-	echo "Please enable 'tokenizer' php extension to proceed"
+	echo -e "${RED}Please enable 'tokenizer' php extension to proceed"
 	exit 1
 fi 
 
@@ -47,7 +48,7 @@ fi
 
 # if a project name given then work on that otherwise prompt to give a project name
 if [ "$1" == "" ]; then
-	echo "Please give a project name."
+	echo -e "${RED}Please give a project name."
 else
 	cd /var/www/html
 	composer create-project --prefer-dist laravel/laravel $1
@@ -59,7 +60,7 @@ else
 	chmod -R 777 bootstrap/cache	
 	cp .env.example .env
 	php artisan key:generate
-	echo "Everything is ready, mate! Create something awesome!"
+	echo -e "${GREEN}Everything is ready, mate! Create something awesome!"
 
 #create virtual host
 fi
