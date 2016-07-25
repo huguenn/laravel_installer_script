@@ -10,3 +10,6 @@ This script checks for the basic requirements and then install the fresh copy of
 - Set needed permissions for files and folders of laravel
 - Create a .env file from the .env.example file
 - generates application key
+
+## What to do
+Run this script with root permission (like 'sudo' in debian distros) from anywhere.
