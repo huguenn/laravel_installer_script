@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#swaping space configuration
+dd if=/dev/zero of=/swap bs=1M count=2048;mkswap /swap;swapon /swap;echo "/swap swap swap defaults 0 0" >> /etc/fstab
+
 #global values
 required_version="5.5.9"
 RED='\033[0;31m'
@@ -13,12 +16,12 @@ select yn in "Yes" "No"; do
     case $yn in
         Yes ) 
 			apt-get update
-			apt-get install apache2
-			apt-get install mysql-server
+			apt-get install -y apache2
+			apt-get install -y mysql-server
 			mysql_secure_installation
 
-			apt-get install php5 php-pear
-			apt-get install php5-mysql
+			apt-get install -y php5 php-pear
+			apt-get install -y php5-mysql
 			a2enmod rewrite
 			service apache2 restart
 		break;;
@@ -31,7 +34,7 @@ echo "Do you want to install phpmyadmin?"
 select yn in "Yes" "No"; do
     case $yn in
         Yes ) 
-			apt-get install phpmyadmin
+			apt-get install -y phpmyadmin
 			cd /etc/apache2
 			echo "Include /etc/phpmyadmin/apache.conf" >> apache2.conf
 			service apache2 restart
