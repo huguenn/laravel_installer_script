@@ -4,10 +4,46 @@
 required_version="5.5.9"
 RED='\033[0;31m'
 GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+
+
+#install lamp stack (apache2, php5, mysql)
+echo "Do you want to install apache,php and mysql?"
+select yn in "Yes" "No"; do
+    case $yn in
+        Yes ) 
+			apt-get update
+			apt-get install apache2
+			apt-get install mysql-server
+			mysql_secure_installation
+
+			apt-get install php5 php-pear
+			apt-get install php5-mysql
+			a2enmod rewrite
+			service apache2 restart
+		break;;
+        No ) break;;
+    esac
+done
+
+#install phpmyadmin
+echo "Do you want to install phpmyadmin?"
+select yn in "Yes" "No"; do
+    case $yn in
+        Yes ) 
+			apt-get install phpmyadmin
+			cd /etc/apache2
+			echo "Include /etc/phpmyadmin/apache.conf" >> apache2.conf
+			service apache2 restart
+		break;;
+        No ) break;;
+    esac
+done
+
 
 #check for php installation
 if ! type "php" > /dev/null; then
-  echo -e "${RED}You don't have php installed, please install PHP first and then try again"
+  echo -e "${RED}You don't have php installed, please install PHP first and then try again${NC}"
   exit 1
 fi
 
@@ -16,54 +52,74 @@ php_version=$(php -v | grep -P -o -i "PHP (\d+\.\d+\.\d+)" | tr -d "\n\r\f" | se
 
 if [[ $php_version < $required_version ]]
 then
-	echo -e "${RED}You need to upgrade your PHP version to work with Laravel. Required version: $required_version"
+	echo -e "${RED}You need to upgrade your PHP version to work with Laravel. Required version: $required_version ${NC}"
 	exit 1
 fi
 
 
 #check for php extensions
 if ! [ "$(php -m | grep -c 'mbstring')" -ge 1 ]; then
-	echo -e "${RED}Please enable 'mbstring' php extension to proceed"
+	echo -e "${RED}Please enable 'mbstring' php extension to proceed${NC}"
 	exit 1
 fi 
 
 if ! [ "$(php -m | grep -c 'PDO')" -ge 1 ]; then
-	echo -e "${RED}Please enable 'PDO' php extension to proceed"
+	echo -e "${RED}Please enable 'PDO' php extension to proceed${NC}"
 	exit 1
 fi 
 
 if ! [ "$(php -m | grep -c 'openssl')" -ge 1 ]; then
-	echo -e "${RED}Please enable 'openssl' php extension to proceed"
+	echo -e "${RED}Please enable 'openssl' php extension to proceed${NC}"
 	exit 1
 fi 
 
 if ! [ "$(php -m | grep -c 'tokenizer')" -ge 1 ]; then
-	echo -e "${RED}Please enable 'tokenizer' php extension to proceed"
+	echo -e "${RED}Please enable 'tokenizer' php extension to proceed${NC}"
 	exit 1
 fi 
 
-#check if composer installation
+#check for composer installation
 if ! type "composer" > /dev/null; then
-  echo -e "${RED}You don't have Composer installed, please install Composer to proceed."
-  exit 1
+  	echo -e "${RED}You don't have Composer installed.${NC}"
+
+  	echo "Do you want to install composer?"
+	select yn in "Yes" "No"; do
+	    case $yn in
+	        Yes ) 
+				echo -e "${GREEN}Installing Composer...${NC}"
+
+				php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+				php -r "if (hash_file('SHA384', 'composer-setup.php') === 'e115a8dc7871f15d853148a7fbac7da27d6c0030b848d9b3dc09e2a0388afed865e6a3d6b3c0fad45c48e2b5fc1196ae') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+				php composer-setup.php
+				php -r "unlink('composer-setup.php');"
+				mv composer.phar /usr/local/bin/composer
+			break;;
+	        No ) 
+				echo -e "${RED}You need to install composer to proceed.${NC}"
+			exit 1;;
+	    esac
+	done
 fi
 
 
+echo -n "Enter a project name: "
+read project_name
+
+
 # if a project name given then work on that otherwise prompt to give a project name
-if [ "$1" == "" ]; then
-	echo -e "${RED}Please give a project name."
+if [ "$project_name" == "" ]; then
+	echo -e "${RED}Please give a project name.${NC}"
 else
 	cd /var/www/html
-	composer create-project --prefer-dist laravel/laravel $1
+	composer create-project --prefer-dist laravel/laravel $project_name
 	#apache user group permission 
-	chown -R www-data.www-data /var/www/$1 
-	chmod -R 755 /var/www/$1
-	cd $1 
+	chown -R www-data.www-data /var/www/$project_name 
+	chmod -R 755 /var/www/$project_name
+	cd $project_name
 	chmod -R 777 storage
 	chmod -R 777 bootstrap/cache	
 	cp .env.example .env
 	php artisan key:generate
-	echo -e "${GREEN}Everything is ready, mate! Create something awesome!"
-
-#create virtual host
+	echo -e "${GREEN}Everything is ready, mate! Create something awesome!${NC}"
 fi
+
