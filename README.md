@@ -1,4 +1,4 @@
-# Laravel 5 Installation script
+# Laravel 5 Installation script(for debian distros)
 This script checks for the basic requirements and then install the fresh copy of laravel
 
 ## What it actually does
