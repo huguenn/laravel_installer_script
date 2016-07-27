@@ -119,10 +119,13 @@ else
 	chown -R www-data.www-data /var/www/$project_name 
 	chmod -R 755 /var/www/$project_name
 	cd $project_name
-	chmod -R 777 storage
-	chmod -R 777 bootstrap/cache	
-	cp .env.example .env
-	php artisan key:generate
+	chmod -R 775 storage
+	chmod -R 775 bootstrap/cache	
 	echo -e "${GREEN}Everything is ready, mate! Create something awesome!${NC}"
 fi
 
+
+#TODO
+# laravel version selection when creating
+# linux other distros support
+# virtual host creation
