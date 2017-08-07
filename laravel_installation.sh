@@ -35,8 +35,7 @@ select yn in "Yes" "No"; do
     case $yn in
         Yes ) 
 			apt-get install -y phpmyadmin
-			cd /etc/apache2
-			echo "Include /etc/phpmyadmin/apache.conf" >> apache2.conf
+			echo "Include /etc/phpmyadmin/apache.conf" >> /etc/apache2/apache2.conf
 			service apache2 restart
 		break;;
         No ) break;;
